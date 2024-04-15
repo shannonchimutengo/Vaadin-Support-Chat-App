@@ -32,6 +32,9 @@ import com.vaadin.flow.theme.lumo.LumoUtility.Padding;
 import com.vaadin.flow.theme.lumo.LumoUtility.Width;
 import com.zimcoding.application.views.MainLayout;
 import jakarta.annotation.security.RolesAllowed;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import java.util.UUID;
 
 @PageTitle("Chat")
@@ -88,7 +91,7 @@ public class ChatView extends HorizontalLayout {
     }
 
     private ChatInfo[] chats = new ChatInfo[]{new ChatInfo("general", 0), new ChatInfo("support", 0),
-            new ChatInfo("casual", 0)};
+            new ChatInfo("inquiries", 0)};
     private ChatInfo currentChat = chats[0];
     private Tabs tabs;
 
@@ -102,7 +105,10 @@ public class ChatView extends HorizontalLayout {
         // identifier, and the user's real name. You can also provide the users
         // avatar by passing an url to the image as a third parameter, or by
         // configuring an `ImageProvider` to `avatarGroup`.
-        UserInfo userInfo = new UserInfo(UUID.randomUUID().toString(), "Steve Lange");
+
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        UserInfo userInfo = new UserInfo(userDetails.getUsername(),userDetails.getUsername());
 
         tabs = new Tabs();
         for (ChatInfo chat : chats) {
